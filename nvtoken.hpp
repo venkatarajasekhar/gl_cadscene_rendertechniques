@@ -44,23 +44,23 @@ namespace StateSystem {
     FACE_BACK,
     MAX_FACES,
   };
-  struct State {
-    struct {
-      struct {
+  class State {
+    class  vertexformat{
+      class bindings{
         GLsizei stride;
-      }bindings[16];
-    }vertexformat;
+      };
+    };
 
-    struct {
+    class alpha{
       GLenum mode;
-    }alpha;
+    };
 
-    struct {
-      struct {
+    class stencil{
+      class GlenumFaces{
         GLenum func;
         GLuint mask;
-      }funcs[MAX_FACES];
-    }stencil;
+      };
+    };
   };
 }
 #endif
@@ -115,7 +115,7 @@ namespace nvtoken
     }
   };
 
-  struct NVTokenSequence {
+  class NVTokenSequence {
     std::vector<GLintptr>  offsets;
     std::vector<GLsizei>   sizes;
     std::vector<GLuint>    states;
@@ -124,31 +124,31 @@ namespace nvtoken
 
 #pragma pack(push,1)
 
-  typedef struct {
+  class ElementAddressCommandEMU{
     GLuint   header;
     GLuint   buffer;
     GLuint   _pad;
     GLuint   typeSizeInByte;
-  } ElementAddressCommandEMU;
+  } ;
 
-  typedef struct {
+  classs AttributeAddressCommandEMU{
     GLuint   header;
     GLuint   index;
     GLuint   buffer;
     GLuint   offset;
-  } AttributeAddressCommandEMU;
+  } ;
 
-  typedef struct {
+ class UniformAddressCommandEMU {
     GLuint      header;
     GLushort    index;
     GLushort    stage;
     GLuint      buffer;
     GLushort    offset256;
     GLushort    size4;
-  } UniformAddressCommandEMU;
+  } ;
 
 
-  struct NVTokenNop {
+  class NVTokenNop {
     static const GLenum   ID = GL_NOP_COMMAND_NV;
 
     NOPCommandNV      cmd;
@@ -158,8 +158,8 @@ namespace nvtoken
     }
   };
 
-  struct NVTokenTerminate {
-    static const GLenum   ID = GL_TERMINATE_SEQUENCE_COMMAND_NV;
+  class NVTokenTerminate {
+    static const uint_32t NVGLenumID;
 
     TerminateSequenceCommandNV      cmd;
 
@@ -168,9 +168,8 @@ namespace nvtoken
     }
   };
 
-  struct NVTokenDrawElemsInstanced {
-    static const GLenum   ID = GL_DRAW_ELEMENTS_INSTANCED_COMMAND_NV;
-
+  class NVTokenDrawElemsInstanced {
+    static const uint_32t TokenGLenumID;
     DrawElementsInstancedCommandNV   cmd;
 
     NVTokenDrawElemsInstanced() {
@@ -201,7 +200,7 @@ namespace nvtoken
     }
   };
 
-  struct NVTokenDrawArraysInstanced {
+  class NVTokenDrawArraysInstanced {
     static const GLenum   ID = GL_DRAW_ARRAYS_INSTANCED_COMMAND_NV;
 
     DrawArraysInstancedCommandNV          cmd;
@@ -232,8 +231,8 @@ namespace nvtoken
     }
   };
 
-  struct NVTokenDrawElems {
-    static const GLenum   ID = GL_DRAW_ELEMENTS_COMMAND_NV;
+  class NVTokenDrawElems {
+    static const uint_32t GLenumID;
 
     DrawElementsCommandNV   cmd;
 
@@ -267,7 +266,7 @@ namespace nvtoken
     }
   };
 
-  struct NVTokenDrawArrays {
+  class NVTokenDrawArrays {
     static const GLenum   ID = GL_DRAW_ARRAYS_COMMAND_NV;
 
     DrawArraysCommandNV   cmd;
@@ -300,8 +299,8 @@ namespace nvtoken
     }
   };
 
-  struct NVTokenDrawElemsStrip {
-    static const GLenum   ID = GL_DRAW_ELEMENTS_STRIP_COMMAND_NV;
+  class NVTokenDrawElemsStrip {
+    static const uint_32t StripGLenumID; 
 
     DrawElementsCommandNV   cmd;
 
@@ -321,9 +320,8 @@ namespace nvtoken
     }
   };
 
-  struct NVTokenDrawArraysStrip {
-    static const GLenum   ID = GL_DRAW_ARRAYS_STRIP_COMMAND_NV;
-
+  class NVTokenDrawArraysStrip {
+    static const uint_32t ArrayGLenumID;
     DrawArraysCommandNV   cmd;
 
     NVTokenDrawArraysStrip() {
@@ -340,10 +338,10 @@ namespace nvtoken
     }
   };
 
-  struct NVTokenVbo {
-    static const GLenum   ID = GL_ATTRIBUTE_ADDRESS_COMMAND_NV;
+  class NVTokenVbo {
+    static const uint32_t VboGLenumID;
 
-    union {
+    class Attribute {
       AttributeAddressCommandNV   cmd;
       AttributeAddressCommandEMU  cmdEMU;
     };
@@ -370,10 +368,10 @@ namespace nvtoken
     }
   };
 
-  struct NVTokenIbo {
+  class NVTokenIbo {
     static const GLenum   ID = GL_ELEMENT_ADDRESS_COMMAND_NV;
 
-    union{
+    class Element{
       ElementAddressCommandNV     cmd;
       ElementAddressCommandEMU    cmdEMU;
     };
@@ -410,10 +408,10 @@ namespace nvtoken
     }
   };
 
-  struct NVTokenUbo {
+  class NVTokenUbo {
     static const GLenum   ID = GL_UNIFORM_ADDRESS_COMMAND_NV;
 
-    union{
+    class Uniform{
       UniformAddressCommandNV   cmd;
       UniformAddressCommandEMU  cmdEMU;
     };
@@ -443,7 +441,7 @@ namespace nvtoken
     }
   };
 
-  struct NVTokenBlendColor{
+  class NVTokenBlendColor{
     static const GLenum   ID = GL_BLEND_COLOR_COMMAND_NV;
 
     BlendColorCommandNV     cmd;
@@ -453,7 +451,7 @@ namespace nvtoken
     }
   };
 
-  struct NVTokenStencilRef{
+  class NVTokenStencilRef{
     static const GLenum   ID = GL_STENCIL_REF_COMMAND_NV;
 
     StencilRefCommandNV cmd;
@@ -463,7 +461,7 @@ namespace nvtoken
     }
   } ;
 
-  struct NVTokenLineWidth{
+  class NVTokenLineWidth{
     static const GLenum   ID = GL_LINE_WIDTH_COMMAND_NV;
 
     LineWidthCommandNV  cmd;
@@ -473,7 +471,7 @@ namespace nvtoken
     }
   };
 
-  struct NVTokenPolygonOffset{
+  class NVTokenPolygonOffset{
     static const GLenum   ID = GL_POLYGON_OFFSET_COMMAND_NV;
 
     PolygonOffsetCommandNV  cmd;
@@ -483,7 +481,7 @@ namespace nvtoken
     }
   };
 
-  struct NVTokenAlphaRef{
+  class NVTokenAlphaRef{
     static const GLenum   ID = GL_ALPHA_REF_COMMAND_NV;
 
     AlphaRefCommandNV cmd;
@@ -493,7 +491,7 @@ namespace nvtoken
     }
   };
 
-  struct NVTokenViewport{
+  class NVTokenViewport{
     static const GLenum   ID = GL_VIEWPORT_COMMAND_NV;
 
     ViewportCommandNV cmd;
@@ -503,7 +501,7 @@ namespace nvtoken
     }
   };
 
-  struct NVTokenScissor {
+  class NVTokenScissor {
     static const GLenum   ID = GL_SCISSOR_COMMAND_NV;
 
     ScissorCommandNV  cmd;
@@ -513,7 +511,7 @@ namespace nvtoken
     }
   };
 
-  struct NVTokenFrontFace {
+  class NVTokenFrontFace {
     static const GLenum   ID = GL_FRONT_FACE_COMMAND_NV;
 
     FrontFaceCommandNV  cmd;
@@ -531,9 +529,15 @@ namespace nvtoken
 
   template <class T>
   void nvtokenMakeNop(T & token){
+    
     NVTokenNop *nop = (NVTokenNop*)&token;
     for (size_t i = 0; i < (sizeof(T))/4; i++){
+      try{
       nop[i] = NVTokenNop();
+      }catch(...){      
+        cout << "null pointer." << endl;
+        exit();
+      }
     }
   }
 
