@@ -33,6 +33,13 @@
 
 #include "platform.h"
 #include "nvcommandlist.h"
+#define TOSTRING(a)  case a: return #a;
+
+class GLGraphics{
+public:
+  NVTokencommand(uint_32);
+};
+    
 #if NVTOKEN_STATESYSTEM
 // not needed if emulation is not used, or implemented differently
 #include "statesystem.hpp"
