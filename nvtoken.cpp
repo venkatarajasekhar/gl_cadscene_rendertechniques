@@ -25,6 +25,8 @@
 /* Contact ckubisch@nvidia.com (Christoph Kubisch) for feedback */
 
 #include "nvtoken.hpp"
+typedef vector nvtokenRegisterSize;
+ 
 
 namespace nvtoken
 {
@@ -32,9 +34,9 @@ namespace nvtoken
   //////////////////////////////////////////////////////////////////////////
   // generic
 
-  GLuint   s_nvcmdlist_header[NVTOKEN_TYPES] = {0};
-  GLuint   s_nvcmdlist_headerSizes[NVTOKEN_TYPES] = {0};
-  GLushort s_nvcmdlist_stages[NVTOKEN_STAGES] = {0};
+  vector<GLuint>   s_nvcmdlist_header;
+  vector<GLuint>   s_nvcmdlist_headerSizes;
+  vector<GLushort> s_nvcmdlist_stages;
   bool     s_nvcmdlist_bindless  = false;
   
   static inline GLuint nvtokenHeaderSW(GLuint type, GLuint size){
@@ -60,7 +62,9 @@ namespace nvtoken
     assert(0 && "can't find header");
     return -1;
   }
-
+  uint_32t GLGraphics::NVTokencommand(uint_32t GLGraphics){
+    TOSTRING(GLGraphics);  
+  }
   template <class T>
   static void nvtokenRegisterSize()
   {
@@ -71,25 +75,25 @@ namespace nvtoken
   {
     assert( !hwsupport || (hwsupport && bindlessSupport) );
 
-    nvtokenRegisterSize<NVTokenTerminate>();
-    nvtokenRegisterSize<NVTokenNop>();
-    nvtokenRegisterSize<NVTokenDrawElems>();
-    nvtokenRegisterSize<NVTokenDrawArrays>();
-    nvtokenRegisterSize<NVTokenDrawElemsStrip>();
-    nvtokenRegisterSize<NVTokenDrawArraysStrip>();
-    nvtokenRegisterSize<NVTokenDrawElemsInstanced>();
-    nvtokenRegisterSize<NVTokenDrawArraysInstanced>();
-    nvtokenRegisterSize<NVTokenVbo>();
-    nvtokenRegisterSize<NVTokenIbo>();
-    nvtokenRegisterSize<NVTokenUbo>();
-    nvtokenRegisterSize<NVTokenLineWidth>();
-    nvtokenRegisterSize<NVTokenPolygonOffset>();
-    nvtokenRegisterSize<NVTokenScissor>();
-    nvtokenRegisterSize<NVTokenBlendColor>();
-    nvtokenRegisterSize<NVTokenViewport>();
-    nvtokenRegisterSize<NVTokenAlphaRef>();
-    nvtokenRegisterSize<NVTokenStencilRef>();
-    nvtokenRegisterSize<NVTokenFrontFace>();
+    nvtokenRegisterSize<NVTokenTerminate> VectorNVTokenTerm();
+    nvtokenRegisterSize<NVTokenNop> VectorNVTokenNop();
+    nvtokenRegisterSize<NVTokenDrawElems> VectorNVTokenDrawElm ();
+    nvtokenRegisterSize<NVTokenDrawArrays> VectorNVTokenDrawArray ();
+    nvtokenRegisterSize<NVTokenDrawElemsStrip> VectorNVTokenElmStrip ();
+    nvtokenRegisterSize<NVTokenDrawArraysStrip> VectorNVTokenArrStrip ();
+    nvtokenRegisterSize<NVTokenDrawElemsInstanced> VectorNVTokenInsta ();
+    nvtokenRegisterSize<NVTokenDrawArraysInstanced> VectorNVTokenArrayInsta();
+    nvtokenRegisterSize<NVTokenVbo> VectorNVTokenVb();
+    nvtokenRegisterSize<NVTokenIbo> VectorNVTokenIb();
+    nvtokenRegisterSize<NVTokenUbo> VectorNVTokenUb();
+    nvtokenRegisterSize<NVTokenLineWidth> VectorNVTokenLine();
+    nvtokenRegisterSize<NVTokenPolygonOffset> VectorNVTokenPoly();
+    nvtokenRegisterSize<NVTokenScissor> VectorNVTokenScis();
+    nvtokenRegisterSize<NVTokenBlendColor> VectorNVTokenBlendcolor();
+    nvtokenRegisterSize<NVTokenViewport> VectorNVTokenViewPort();
+    nvtokenRegisterSize<NVTokenAlphaRef> VectorNVTokenAlphaRef();
+    nvtokenRegisterSize<NVTokenStencilRef> VectorNVTokenRef();
+    nvtokenRegisterSize<NVTokenFrontFace> VectorNVTokenFrontFace();
     
     for (int i = 0; i < NVTOKEN_TYPES; i++){
       GLuint sz = s_nvcmdlist_headerSizes[i];
@@ -117,29 +121,6 @@ namespace nvtoken
       }
     }
   }
-
-#define TOSTRING(a)  case a: return #a;
-  const char* nvtokenCommandToString(GLenum type){
-    switch  (type){
-      TOSTRING(GL_NOP_COMMAND_NV                   );
-      TOSTRING(GL_DRAW_ELEMENTS_INSTANCED_COMMAND_NV);
-      TOSTRING(GL_DRAW_ARRAYS_INSTANCED_COMMAND_NV  );
-      TOSTRING(GL_ELEMENT_ADDRESS_COMMAND_NV       );
-      TOSTRING(GL_ATTRIBUTE_ADDRESS_COMMAND_NV     );
-      TOSTRING(GL_UNIFORM_ADDRESS_COMMAND_NV       );
-      TOSTRING(GL_BLEND_COLOR_COMMAND_NV           );
-      TOSTRING(GL_STENCIL_REF_COMMAND_NV           );
-      TOSTRING(GL_TERMINATE_SEQUENCE_COMMAND_NV    );
-      TOSTRING(GL_LINE_WIDTH_COMMAND_NV            );
-      TOSTRING(GL_POLYGON_OFFSET_COMMAND_NV        );
-      TOSTRING(GL_ALPHA_REF_COMMAND_NV             );
-      TOSTRING(GL_VIEWPORT_COMMAND_NV              );
-      TOSTRING(GL_SCISSOR_COMMAND_NV               );
-      TOSTRING(GL_DRAW_ELEMENTS_COMMAND_NV         );
-      TOSTRING(GL_DRAW_ARRAYS_COMMAND_NV           );
-      TOSTRING(GL_DRAW_ELEMENTS_STRIP_COMMAND_NV   );
-      TOSTRING(GL_DRAW_ARRAYS_STRIP_COMMAND_NV     );
-    }
     return NULL;
   }
 
@@ -152,9 +133,9 @@ namespace nvtoken
     const GLubyte* streamEnd = current + streamSize;
 
     while (current < streamEnd){
-      const GLuint*             header  = (const GLuint*)current;
+      const GLuint* GLheader  = (const GLuint*)current;
 
-      GLenum type = nvtokenHeaderCommand(*header);
+      GLenum  GLtype= nvtokenHeaderCommand(*header);
       stats[type]++;
 
       current += s_nvcmdlist_headerSizes[type];
@@ -183,7 +164,7 @@ namespace nvtoken
     else    modeSpecial = mode;
 
     while (current < streamEnd){
-      const GLuint*             header  = (const GLuint*)current;
+      const GLuint* header  = (const GLuint*)current;
 
       GLenum cmdtype = nvtokenHeaderCommand(*header);
       // if you always use emulation on non-native tokens you can use 
@@ -364,7 +345,7 @@ namespace nvtoken
     const GLuint* NVP_RESTRICT states, const GLuint* NVP_RESTRICT fbos, GLuint count, 
     StateSystem &stateSystem)
   {
-    int lastFbo = ~0;
+    int lastFbo = 0;
     const char* NVP_RESTRICT tokens = (const char*)stream;
 
     StateSystem::StateID lastID;
